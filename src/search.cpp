@@ -2142,7 +2142,9 @@ void SearchManager::pv(Search::Worker&           worker,
         bool tb = worker.tbConfig.rootInTB && std::abs(v) <= VALUE_TB;
         v       = tb ? rootMoves[i].tbScore : v;
 
-        bool isExact = i != pvIdx || tb || !updated;  // tablebase- and previous-scores are exact
+        // Tablebase and previous scores are exact.
+        // Scores for PVs after the most recently searched one may be upperbounds
+        bool isExact = i < pvIdx || tb || !updated;
 
         // Potentially correct and extend the PV, and in exceptional cases v
         if (is_decisive(v) && std::abs(v) < VALUE_MATE_IN_MAX_PLY
